@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>jQuery</title>
+<style type="text/css">
+	*{
+		padding:0;
+		margin:0;	
+	}
+	body{
+		font-family:Arial, Helvetica, sans-serif;
+		font-size:14px;
+		line-height:20px;
+		color:#000;	
+		overflow-x:hidden;
+	}
+	.demo{
+		height: 500px;
+		margin: 0 auto;
+		overflow: hidden;
+		position: relative;
+		width: 1024px;	
+	}
+	.container {
+		background-color: black;
+		left: 0;
+		position: absolute;
+		top: 0;
+	}
+	.container div {
+	  background-color: #000;
+	  float:left;
+	  display:block;
+	}
+	.container > div > img {
+	  width: 100%;
+	  height: auto;
+	}
+	.pagination{
+		padding:20px 0 0 0;
+		text-align:center;
+		clear:both;
+	}
+	@media all and (max-width:1023px){
+	.demo{
+		height: 400px;
+		margin: 0 auto;
+		overflow: hidden;
+		position: relative;
+		width: 98%;	
+	}
+	}
+</style>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).bind("ready resize load", function(e) {
+
+		//Slider Script
+		var currentIndex = 0; 
+		var items = $('.container div'); 
+		var itemAmt = items.length;
+		var singleItemwidth = $('.container div').width();
+		
+		var total = 0;
+		$('.container div').each(function(index, element) {
+            var contdiv = $(this).width();
+			total += contdiv;
+        });
+		$('.container').width(total);
+		
+		var windowWidth = $(window).width();	
+		if(windowWidth < 1024){
+			$('.container div').width(windowWidth);
+		}
+
+		var autoSlide = setInterval(function() {
+		  	currentIndex = currentIndex + 1;
+			var item = $('.container div').eq(currentIndex);
+			var prevItem = item.prev().animate({marginLeft: -singleItemwidth},'slow',function(){
+				$('.container').append(prevItem.animate({marginLeft: ''}));	
+				currentIndex = 0;
+			});
+		}, 2000);
+		
+		$('.next').click(function() {	  
+			clearInterval(autoSlide);
+		  	currentIndex = currentIndex + 1;
+			var item = $('.container div').eq(currentIndex);
+			var prevItem = item.prev().animate({marginLeft: -singleItemwidth},500,function(){
+				$('.container').append(prevItem.animate({marginLeft: ''}));
+				currentIndex = 0;
+			});
+		});
+		
+		$('.prev').click(function() {
+			clearInterval(autoSlide);
+		  	currentIndex = currentIndex - 1;
+			var item = $('.container div').eq(currentIndex);
+			item.animate({marginLeft: -singleItemwidth},0, function(){
+				$('.container').prepend(item);
+				item.animate({marginLeft: ''},500);
+				currentIndex = 0;
+			});
+		});
+		
+    });
+</script>
+</head>
+
+<body>
+
+<!-- Slider Section -->
+<section class="demo">
+    <div class="container">
+        <div><img src="images/1.jpg" alt=""></div>
+        <div><img src="images/2.jpg" alt=""></div>
+        <div><img src="images/3.jpg" alt=""></div>
+        <div><img src="images/4.jpg" alt=""></div>
+        <div><img src="images/5.jpg" alt=""></div>
+    </div>
+</section>
+
+<div class="pagination">
+    <button class="prev">Previous</button>
+    <button class="next">Next</button>
+</div>
+                    
+</body>
+</html>
